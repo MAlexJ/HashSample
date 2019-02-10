@@ -20,7 +20,7 @@ public class AppHashMap {
     map.put("All", 123);
     map.put(null, 456);
 
-    int count = map.countCollidingEntries();
-    LOG.debug("Number of collisions: " + count);
+    LOG.debug("Print");
+    map.printMap();
   }
 }

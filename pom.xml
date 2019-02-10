@@ -15,8 +15,8 @@
   <properties>
     <lombok.version>1.16.18</lombok.version>
     <maven.compiler.fork>true</maven.compiler.fork>
-    <maven.compiler.source>1.7</maven.compiler.source>
-    <maven.compiler.target>1.7</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
     <groovy.rt.version>2.5.6</groovy.rt.version>
     <maven-compiler-plugin.version>3.6.2</maven-compiler-plugin.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -76,6 +76,14 @@
             <version>${lombok.version}</version>
           </dependency>
         </dependencies>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>8</source>
+          <target>8</target>
+        </configuration>
       </plugin>
     </plugins>
   </build>

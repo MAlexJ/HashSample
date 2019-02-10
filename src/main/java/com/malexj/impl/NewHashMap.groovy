@@ -2,7 +2,7 @@ package com.malexj.impl
 
 import java.lang.reflect.Field
 
-class NewHashMap<K,V> extends HashMap<K,V> {
+class NewHashMap<K, V> extends HashMap<K, V> implements NewMap {
 
     NewHashMap() {
         super()
@@ -16,45 +16,10 @@ class NewHashMap<K,V> extends HashMap<K,V> {
         super(initialCapacity, loadFactor)
     }
 
-    int countCollidingEntries() {
-        println("Class: " + this.getClass().getSuperclass().getSimpleName())
-
-        def fs = this.getClass().getSuperclass().getDeclaredFields()
-        def table
-        def count = 0
-
-        // find HashMap.Node<K,V> in map
-        for (Field field : fs) {
-            if (field.getName() == "table") {
-                field.setAccessible(true)
-                table = field.get(super)
-            } else {
-                field.setAccessible(true)
-                println(field.getName() + ":  " + field.get(super))
-            }
-        }
-        println()
-
-        // find the basket number and items in the linked list
-        for (int i = 0; i < table.length - 1; i++) {
-            sleep(100)
-            def e = table[i]
-            if (e != null) {
-                print("[" + i + "] " + e)
-                while (e.next != null) {
-                    e = e.next
-                    print(", " + e)
-                    count++
-                }
-                println()
-            }
-        }
-        print("\nThe number of cells in the basket: ")
-        print(table.length)
-        print("\n")
-        return count
-    }
-
+    /**
+     * Get list Nodes
+     */
+    @Override
     ArrayList<NodeN>[] getTable() {
 
         def fs = this.getClass().getSuperclass().getDeclaredFields()
@@ -67,14 +32,12 @@ class NewHashMap<K,V> extends HashMap<K,V> {
             }
         }
 
-        if(Objects.isNull(table)){
+        if (Objects.isNull(table)) {
             return new ArrayList<NodeN>[0]
         }
 
-        def length = table.length-1;
-        ArrayList<NodeN>[] list = new ArrayList<NodeN>[length]
-
-        for (int i = 0; i < length; i++) {
+        ArrayList<NodeN>[] list = new ArrayList<NodeN>[table.length]
+        for (int i = 0; i <= table.length - 1; i++) {
             def obj = table[i]
             list[i] = new ArrayList<NodeN>()
             getNext(obj, list[i])
@@ -83,6 +46,58 @@ class NewHashMap<K,V> extends HashMap<K,V> {
         return list
     }
 
+    @Override
+    int numOfBasket() {
+        return getTable().length
+    }
+
+    @Override
+    Map<String, String> getInfo() {
+        Map<String, String> map = new HashMap<>();
+        def fs = this.getClass().getSuperclass().getDeclaredFields()
+        for (Field field : fs) {
+            if (field.getName() != "table") {
+                field.setAccessible(true)
+                map.put(field.getName(), field.get(super).toString())
+            }
+        }
+        return map
+    }
+
+    @Override
+    <T> int calculatePositionInBasket(T key) {
+        int hash = getKeyHashCode(key)
+        return (numOfBasket() - 1) & hash
+    }
+
+    @Override
+    void printMap() {
+        ArrayList<NodeN>[] table = getTable()
+        for (int i = 0; i < table.length; i++) {
+            print("[" + i + "] ")
+            printNode(table[i])
+            println()
+        }
+    }
+
+    private static void printNode(ArrayList<NodeN> list) {
+        for (NodeN node : list) {
+            print(node)
+            print(" | ")
+        }
+    }
+
+    /**
+     * Get key hash code
+     */
+    private static <T> int getKeyHashCode(T obj) {
+        int h
+        return (obj == null) ? 0 : (h = obj.hashCode()) ^ (h >>> 16)
+    }
+
+    /**
+     * Get next Node
+     */
     void getNext(def obj, ArrayList<NodeN> list) {
         if (Objects.isNull(obj)) {
             return
