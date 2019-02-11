@@ -8,7 +8,7 @@ public class AppHashMap {
   private static final Logger LOG = Logger.getLogger(AppHashMap.class);
 
   public static void main(String[] args) {
-    NewHashMap map = new NewHashMap();
+    NewHashMap<String, Integer> map = new NewHashMap<>();
 
     String s1 = "FB";
     String s2 = "Ea";
