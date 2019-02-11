@@ -1,9 +1,11 @@
 package com.malexj.impl;
 
 import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Objects;
 import java.util.SplittableRandom;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,7 +17,7 @@ public class NewHashMapTest {
   /**
    * link -> {@link java.util.HashMap} field: modCount
    *
-   * The number of times this HashMap has been structurally modified Structural modifications are
+   * The number of times this HashMap has been structurally modified. Structural modifications are
    * those that change the number of mappings in the HashMap or otherwise modify its internal
    * structure (e.g., rehash).  This field is used to make iterators on Collection-views of the
    * HashMap fail-fast.  (See ConcurrentModificationException).
@@ -23,6 +25,9 @@ public class NewHashMapTest {
   private static final String MOD_COUNT_VAL = "modCount";
 
 
+  /**
+   * The load factor for the hash table
+   */
   private static final String LOAD_FACTOR_VAL = "loadFactor";
 
   @Test
@@ -43,7 +48,7 @@ public class NewHashMapTest {
 
 
   @Test
-  public void TestNumberOfBasket() {
+  public void testNumberOfBasket() {
     User user = new User(new SplittableRandom().nextInt(0, Integer.MAX_VALUE), "Name");
 
     NewHashMap<User, Integer> map = new NewHashMap<>();
@@ -73,8 +78,31 @@ public class NewHashMapTest {
 
     Map<String, String> info = map.getInfo();
     assertEquals("0.75", info.get(LOAD_FACTOR_VAL));
+
+    // `modCount` - This field is used to make iterators on Collection-views
     assertEquals(Integer.toString(expectedModCount), info.get(MOD_COUNT_VAL));
     assertEquals(16, map.numOfBasket());
+  }
+
+  @Test
+  public void testPutNullKey() {
+    NewHashMap<User, Integer> map = new NewHashMap<>();
+    map.put(null, 1);
+    map.printMap();
+
+    ArrayList<NodeN> nodeNS = map.getTable()[0];
+    assertTrue(Objects.isNull(nodeNS.get(0).getKey()));
+  }
+
+  @Test
+  public void testPutNullValue() {
+    NewHashMap<User, Integer> map = new NewHashMap<>();
+    map.put(null, null);
+    map.printMap();
+
+    ArrayList<NodeN> nodeNS = map.getTable()[0];
+    assertTrue(Objects.isNull(nodeNS.get(0).getKey()));
+    assertTrue(Objects.isNull(nodeNS.get(0).getValue()));
   }
 
 

@@ -102,7 +102,7 @@ class NewHashMap<K, V> extends HashMap<K, V> implements NewMap {
         if (Objects.isNull(obj)) {
             return
         }
-        list.add(new NodeN(obj.key, obj.value))
+        list.add(new NodeN(obj.key, obj.value, obj.hash))
         getNext(obj.next, list)
     }
 }

@@ -13,5 +13,6 @@ public class NodeN<K, V> {
 
   private K key;
   private V value;
+  private int hash;
 
 }
